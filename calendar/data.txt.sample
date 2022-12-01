@@ -1,0 +1,17 @@
+# This is a comment
+
+# The empty line above gets ignored
+
+# Some examples for calendar entries
+
+# This will generate a full day entry
+01.01.1970	Name	Category
+
+# This will generate a one hour entry
+01.01.1970 13:00	Name	Category
+
+# This will generate a five day entry
+01.01.1970-05.01.1970	Name	Category
+
+# This will generate a 20 hour entry
+01.01.1970 13:00-02.01.1970 9:00	Name	Category

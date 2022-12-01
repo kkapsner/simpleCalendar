@@ -1,0 +1,4 @@
+name = "name of the calendar"
+description = "description of the calendar"
+url = "https://url.to/calendar.php?type=ics"
+uid_template = "{name}_{id}@something_unique"
