@@ -1,4 +1,4 @@
-# This is a comment
+# This is a comment - will be displayed in the HTML output
 
 # The empty line above gets ignored
 
@@ -9,6 +9,9 @@
 
 # This will generate a one hour entry
 01.01.1970 13:00	Name	Category
+
+# This will generate a two hour entry
+01.01.1970 13:00-15:00	Name	Category
 
 # This will generate a five day entry
 01.01.1970-05.01.1970	Name	Category

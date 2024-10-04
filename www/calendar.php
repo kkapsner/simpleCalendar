@@ -10,20 +10,32 @@ class CalendarDate {
 		self::$timezone = new DateTimeZone("Europe/Berlin");
 	}
 	
-	function __construct($dateString){
+	function __construct($dateString, ?CalendarDate $start = null){
 		if ($dateString){
 			$withTime = DateTime::createFromFormat("d.m.Y H:i|", $dateString, self::$timezone);
 			if ($withTime){
 				$this->withTime = true;
 				$this->date = $withTime;
+				return;
 			}
-			else {
-				$withoutTime = DateTime::createFromFormat("d.m.Y|", $dateString, self::$timezone);
-				if ($withoutTime){
-					$this->withTime = false;
-					$this->date = $withoutTime;
-				}
+			$withoutTime = DateTime::createFromFormat("d.m.Y|", $dateString, self::$timezone);
+			if ($withoutTime){
+				$this->withTime = false;
+				$this->date = $withoutTime;
+				return;
 			}
+			if (!$start || !$start->date){
+				return;
+			}
+			$withStartDate = DateTime::createFromFormat("d.m.Y H:i", $start->date->format("d.m.Y ") . $dateString, self::$timezone);
+			if ($withStartDate){
+				$start->withTime = true;
+				$this->withTime = true;
+				$this->date = $withStartDate;
+				return;
+			}
+		}
+	}
 		}
 	}
 	
@@ -50,7 +62,7 @@ function parseRange($dateDefinition){
 	
 	$end = false;
 	if (count($dates) == 2){
-		$end = new CalendarDate($dates[1]);
+		$end = new CalendarDate($dates[1], $start);
 		if (!$end->withTime){
 			$end->date->modify("+1 day");
 		}
