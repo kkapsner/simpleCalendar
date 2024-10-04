@@ -5,6 +5,7 @@ include_once("loadFramework.php");
 class CalendarDate {
 	public ?DateTime $date = null;
 	public bool $withTime;
+	public bool $autoCreated = false;
 	private static DateTimeZone $timezone;
 	static function init(){
 		self::$timezone = new DateTimeZone("Europe/Berlin");
@@ -36,7 +37,12 @@ class CalendarDate {
 			}
 		}
 	}
+	
+	function format($dateOnlyFormat, $dateWithTimeFormat){
+		if ($this->withTime){
+			return $this->date->format($dateWithTimeFormat);
 		}
+		return $this->date->format($dateOnlyFormat);
 	}
 	
 	function getEnd(){
@@ -50,6 +56,7 @@ class CalendarDate {
 		else {
 			$date->modify("+1 day");
 		}
+		$end->autoCreated = true;
 		$end->date = $date;
 		return $end;
 	}
@@ -73,13 +80,16 @@ function parseRange($dateDefinition){
 	return array($start, $end);
 }
 
-function eachDate($callback){
+function eachDate($callback, $commentCallback = null){
 	global $dataFile;
 	$lines = preg_split("/[\\n\\r]+/", file_get_contents($dataFile), 0, PREG_SPLIT_NO_EMPTY);
 	$id = 1;
 	foreach ($lines as $line){
 		$line = ltrim($line);
 		if (!$line || substr($line, 0, 1) === "#"){
+			if ($commentCallback){
+				$commentCallback($line);
+			}
 			continue;
 		}
 		list($dateDefinition, $name, $category) = explode("\t", $line, 3);
@@ -96,7 +106,9 @@ $types = array(
 	"ics" => "text/calendar;charset=UTF-8",
 	"txt" => "text/plain;charset=UTF-8",
 	"json" => "application/json",
-	"csv" => "text/csv;charset=UTF-8");
+	"csv" => "text/csv;charset=UTF-8",
+	"html" => "text/html;charset=UTF-8",
+);
 
 $type = strToLower(array_read_key("type", $_GET, "ics"));
 
